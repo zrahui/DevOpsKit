@@ -42,7 +42,17 @@ class PersistedStateInfo: CommandBase
 		# Read file from Storage
 	    $storageReportHelper = [StorageReportHelper]::new(); 
 		$storageReportHelper.Initialize($false);	
-		$StorageReportJson =$storageReportHelper.GetLocalSubscriptionScanReport();
+		$StorageReportJson =$null;
+		# Check for write access
+		if($storageReportHelper.HasStorageReportWriteAccessPermissions())
+		{
+	  	  $StorageReportJson = $storageReportHelper.GetLocalSubscriptionScanReport();
+		}else
+		{
+		 $this.PublishCustomMessage("You don't have the required permissions to update user comments. If you'd like to update user comments, please request your subscription owner to grant you 'Contributor' access to the 'AzSKRG' resource group.",[MessageType]::Error);
+		 return $messages;
+		}
+	
 		$SelectedSubscription=$null;
 		$erroredControls=@();
 		$ResourceScanResult=$null;
