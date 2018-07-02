@@ -833,6 +833,10 @@ class SVTBase: AzSKRoot
 		try
 		{
 			$expiryIndays = $this.CalculateExpirationInDays([SVTEventContext] $eventcontext,[ControlState] $controlState);
+			if($expiryIndays -ne -1)
+			{
+			   $controlState.State.ExpiryDate = ($controlState.State.AttestedDate.AddDays($expiryIndays)).ToString("MM/dd/yyyy");
+			}
 			#Validate if expiry period is passed
 			if($expiryIndays -ne -1 -and $controlState.State.AttestedDate.AddDays($expiryIndays) -lt [DateTime]::UtcNow)
 			{
